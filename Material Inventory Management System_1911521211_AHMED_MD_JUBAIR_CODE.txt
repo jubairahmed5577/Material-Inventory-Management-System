@@ -1,0 +1,459 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+class Material
+{
+    public int MaterialNumber { get; set; }
+    public string MaterialName { get; set; }
+    public string Specification { get; set; }
+    public string Type { get; set; }
+    public string MeasurementUnit { get; set; }
+}
+
+class InboundMaterial
+{
+    public int MaterialNumber { get; set; }
+    public int Quantity { get; set; }
+    public DateTime Date { get; set; }
+    public string SupplierName { get; set; }
+}
+
+class OutboundMaterial
+{
+    public int MaterialNumber { get; set; }
+    public int Quantity { get; set; }
+    public DateTime Date { get; set; }
+    public string CustomerName { get; set; }
+}
+
+class MaterialInventoryManagementSystem
+{
+    private static List<Material> materials = new List<Material>();
+    private static List<InboundMaterial> inboundMaterials = new List<InboundMaterial>();
+    private static List<OutboundMaterial> outboundMaterials = new List<OutboundMaterial>();
+
+    static void Main(string[] args)
+    {
+        Console.WriteLine("Material Inventory Management System");
+
+        while (true)
+        {
+            Console.WriteLine();
+            Console.WriteLine("Choose an option:");
+            Console.WriteLine("1 - Input basic information about materials");
+            Console.WriteLine("2 - Query and modify basic material information");
+            Console.WriteLine("3 - Input inbound material information");
+            Console.WriteLine("4 - Query and modify inbound material information");
+            Console.WriteLine("5 - Input outbound material information");
+            Console.WriteLine("6 - Query and modify outbound material information");
+            Console.WriteLine("7 - Query material balance information");
+            Console.WriteLine("8 - Browse material balance information");
+            Console.WriteLine("9 - Exit");
+            Console.WriteLine();
+
+            int option;
+            if (!int.TryParse(Console.ReadLine(), out option))
+            {
+                Console.WriteLine("Invalid option. Please enter a valid number.");
+                continue;
+            }
+
+            switch (option)
+            {
+                case 1:
+                    InputMaterial();
+                    break;
+                case 2:
+                    QueryAndModifyMaterial();
+                    break;
+                case 3:
+                    InputInboundMaterial();
+                    break;
+                case 4:
+                    QueryAndModifyInboundMaterial();
+                    break;
+                case 5:
+                    InputOutboundMaterial();
+                    break;
+                case 6:
+                    QueryAndModifyOutboundMaterial();
+                    break;
+                case 7:
+                    QueryMaterialBalance();
+                    break;
+                case 8:
+                    BrowseMaterialBalance();
+                    break;
+                case 9:
+                    return;
+                default:
+                    Console.WriteLine("Invalid option");
+                    break;
+            }
+        }
+    }
+
+    static void InputMaterial()
+    {
+        Console.WriteLine("Enter Material Number:");
+        if (!int.TryParse(Console.ReadLine(), out int materialNumber))
+        {
+            Console.WriteLine("Invalid material number. Please enter a valid number.");
+            return;
+        }
+
+        Console.WriteLine("Enter Material Name:");
+        string materialName = Console.ReadLine();
+
+        Console.WriteLine("Enter Specification:");
+        string specification = Console.ReadLine();
+
+        Console.WriteLine("Enter Type:");
+        string type = Console.ReadLine();
+
+        Console.WriteLine("Enter Measurement Unit:");
+        string measurementUnit = Console.ReadLine();
+
+        Material material = new Material()
+        {
+            MaterialNumber = materialNumber,
+            MaterialName = materialName,
+            Specification = specification,
+            Type = type,
+            MeasurementUnit = measurementUnit
+        };
+
+        materials.Add(material);
+
+        Console.WriteLine("Material added successfully");
+    }
+
+    static void QueryAndModifyMaterial()
+    {
+        Console.WriteLine("Enter Material Number or Material Name:");
+        string searchKey = Console.ReadLine();
+
+        List<Material> foundMaterials = materials
+            .Where(m => m.MaterialNumber.ToString() == searchKey || m.MaterialName == searchKey)
+            .ToList();
+
+        if (foundMaterials.Count == 0)
+        {
+            Console.WriteLine("No materials found");
+            return;
+        }
+
+        Console.WriteLine("Found Materials:");
+
+        foreach (Material material in foundMaterials)
+        {
+            Console.WriteLine("Material Number: " + material.MaterialNumber);
+            Console.WriteLine("Material Name: " + material.MaterialName);
+            Console.WriteLine("Specification: " + material.Specification);
+            Console.WriteLine("Type: " + material.Type);
+            Console.WriteLine("Measurement Unit: " + material.MeasurementUnit);
+            Console.WriteLine();
+        }
+
+        Console.WriteLine("Enter the Material Number of the material you want to modify:");
+        if (!int.TryParse(Console.ReadLine(), out int materialNumber))
+        {
+            Console.WriteLine("Invalid material number. Please enter a valid number.");
+            return;
+        }
+
+        Material foundMaterial = foundMaterials.FirstOrDefault(m => m.MaterialNumber == materialNumber);
+
+        if (foundMaterial == null)
+        {
+            Console.WriteLine("Material not found");
+            return;
+        }
+
+        Console.WriteLine("Enter the new Material Name:");
+        string newMaterialName = Console.ReadLine();
+
+        Console.WriteLine("Enter the new Specification:");
+        string newSpecification = Console.ReadLine();
+
+        Console.WriteLine("Enter the new Type:");
+        string newType = Console.ReadLine();
+
+        Console.WriteLine("Enter the new Measurement Unit:");
+        string newMeasurementUnit = Console.ReadLine();
+
+        foundMaterial.MaterialName = newMaterialName;
+        foundMaterial.Specification = newSpecification;
+        foundMaterial.Type = newType;
+        foundMaterial.MeasurementUnit = newMeasurementUnit;
+
+        Console.WriteLine("Material modified successfully");
+    }
+
+    static void InputInboundMaterial()
+    {
+        Console.WriteLine("Enter Material Number:");
+        if (!int.TryParse(Console.ReadLine(), out int materialNumber))
+        {
+            Console.WriteLine("Invalid material number. Please enter a valid number.");
+            return;
+        }
+
+        Console.WriteLine("Enter Quantity:");
+        if (!int.TryParse(Console.ReadLine(), out int quantity))
+        {
+            Console.WriteLine("Invalid quantity. Please enter a valid number.");
+            return;
+        }
+
+        Console.WriteLine("Enter Date (YYYY-MM-DD):");
+        if (!DateTime.TryParse(Console.ReadLine(), out DateTime date))
+        {
+            Console.WriteLine("Invalid date format. Please enter a valid date (YYYY-MM-DD).");
+            return;
+        }
+
+        Console.WriteLine("Enter Supplier Name:");
+        string supplierName = Console.ReadLine();
+
+        InboundMaterial inboundMaterial = new InboundMaterial()
+        {
+            MaterialNumber = materialNumber,
+            Quantity = quantity,
+            Date = date,
+            SupplierName = supplierName
+        };
+
+        inboundMaterials.Add(inboundMaterial);
+
+        Console.WriteLine("Inbound material added successfully");
+    }
+
+    static void QueryAndModifyInboundMaterial()
+    {
+        Console.WriteLine("Enter Material Number:");
+        if (!int.TryParse(Console.ReadLine(), out int materialNumber))
+        {
+            Console.WriteLine("Invalid material number. Please enter a valid number.");
+            return;
+        }
+
+        List<InboundMaterial> foundInboundMaterials = inboundMaterials
+            .Where(im => im.MaterialNumber == materialNumber)
+            .ToList();
+
+        if (foundInboundMaterials.Count == 0)
+        {
+            Console.WriteLine("No inbound materials found for the specified material number");
+            return;
+        }
+
+        Console.WriteLine("Found Inbound Materials:");
+
+        foreach (InboundMaterial inboundMaterial in foundInboundMaterials)
+        {
+            Console.WriteLine("Material Number: " + inboundMaterial.MaterialNumber);
+            Console.WriteLine("Quantity: " + inboundMaterial.Quantity);
+            Console.WriteLine("Date: " + inboundMaterial.Date.ToString("yyyy-MM-dd"));
+            Console.WriteLine("Supplier Name: " + inboundMaterial.SupplierName);
+            Console.WriteLine();
+        }
+
+        Console.WriteLine("Enter the Date (YYYY-MM-DD) of the inbound material you want to modify:");
+        if (!DateTime.TryParse(Console.ReadLine(), out DateTime date))
+        {
+            Console.WriteLine("Invalid date format. Please enter a valid date (YYYY-MM-DD).");
+            return;
+        }
+
+        InboundMaterial foundInboundMaterial = foundInboundMaterials.FirstOrDefault(im => im.Date == date);
+
+        if (foundInboundMaterial == null)
+        {
+            Console.WriteLine("Inbound material not found");
+            return;
+        }
+
+        Console.WriteLine("Enter the new Quantity:");
+        if (!int.TryParse(Console.ReadLine(), out int newQuantity))
+        {
+            Console.WriteLine("Invalid quantity. Please enter a valid number.");
+            return;
+        }
+
+        Console.WriteLine("Enter the new Date (YYYY-MM-DD):");
+        if (!DateTime.TryParse(Console.ReadLine(), out DateTime newDate))
+        {
+            Console.WriteLine("Invalid date format. Please enter a valid date (YYYY-MM-DD).");
+            return;
+        }
+
+        Console.WriteLine("Enter the new Supplier Name:");
+        string newSupplierName = Console.ReadLine();
+
+        foundInboundMaterial.Quantity = newQuantity;
+        foundInboundMaterial.Date = newDate;
+        foundInboundMaterial.SupplierName = newSupplierName;
+
+        Console.WriteLine("Inbound material modified successfully");
+    }
+
+    static void InputOutboundMaterial()
+    {
+        Console.WriteLine("Enter Material Number:");
+        if (!int.TryParse(Console.ReadLine(), out int materialNumber))
+        {
+            Console.WriteLine("Invalid material number. Please enter a valid number.");
+            return;
+        }
+
+        Console.WriteLine("Enter Quantity:");
+        if (!int.TryParse(Console.ReadLine(), out int quantity))
+        {
+            Console.WriteLine("Invalid quantity. Please enter a valid number.");
+            return;
+        }
+
+        Console.WriteLine("Enter Date (YYYY-MM-DD):");
+        if (!DateTime.TryParse(Console.ReadLine(), out DateTime date))
+        {
+            Console.WriteLine("Invalid date format. Please enter a valid date (YYYY-MM-DD).");
+            return;
+        }
+
+        Console.WriteLine("Enter Customer Name:");
+        string customerName = Console.ReadLine();
+
+        OutboundMaterial outboundMaterial = new OutboundMaterial()
+        {
+            MaterialNumber = materialNumber,
+            Quantity = quantity,
+            Date = date,
+            CustomerName = customerName
+        };
+
+        outboundMaterials.Add(outboundMaterial);
+
+        Console.WriteLine("Outbound material added successfully");
+    }
+
+    static void QueryAndModifyOutboundMaterial()
+    {
+        Console.WriteLine("Enter Material Number:");
+        if (!int.TryParse(Console.ReadLine(), out int materialNumber))
+        {
+            Console.WriteLine("Invalid material number. Please enter a valid number.");
+            return;
+        }
+
+        List<OutboundMaterial> foundOutboundMaterials = outboundMaterials
+            .Where(om => om.MaterialNumber == materialNumber)
+            .ToList();
+
+        if (foundOutboundMaterials.Count == 0)
+        {
+            Console.WriteLine("No outbound materials found for the specified material number");
+            return;
+        }
+
+        Console.WriteLine("Found Outbound Materials:");
+
+        foreach (OutboundMaterial outboundMaterial in foundOutboundMaterials)
+        {
+            Console.WriteLine("Material Number: " + outboundMaterial.MaterialNumber);
+            Console.WriteLine("Quantity: " + outboundMaterial.Quantity);
+            Console.WriteLine("Date: " + outboundMaterial.Date.ToString("yyyy-MM-dd"));
+            Console.WriteLine("Customer Name: " + outboundMaterial.CustomerName);
+            Console.WriteLine();
+        }
+
+        Console.WriteLine("Enter the Date (YYYY-MM-DD) of the outbound material you want to modify:");
+        if (!DateTime.TryParse(Console.ReadLine(), out DateTime date))
+        {
+            Console.WriteLine("Invalid date format. Please enter a valid date (YYYY-MM-DD).");
+            return;
+        }
+
+        OutboundMaterial foundOutboundMaterial = foundOutboundMaterials.FirstOrDefault(om => om.Date == date);
+
+        if (foundOutboundMaterial == null)
+        {
+            Console.WriteLine("Outbound material not found");
+            return;
+        }
+
+        Console.WriteLine("Enter the new Quantity:");
+        if (!int.TryParse(Console.ReadLine(), out int newQuantity))
+        {
+            Console.WriteLine("Invalid quantity. Please enter a valid number.");
+            return;
+        }
+
+        Console.WriteLine("Enter the new Date (YYYY-MM-DD):");
+        if (!DateTime.TryParse(Console.ReadLine(), out DateTime newDate))
+        {
+            Console.WriteLine("Invalid date format. Please enter a valid date (YYYY-MM-DD).");
+            return;
+        }
+
+        Console.WriteLine("Enter the new Customer Name:");
+        string newCustomerName = Console.ReadLine();
+
+        foundOutboundMaterial.Quantity = newQuantity;
+        foundOutboundMaterial.Date = newDate;
+        foundOutboundMaterial.CustomerName = newCustomerName;
+
+        Console.WriteLine("Outbound material modified successfully");
+    }
+
+    static void QueryMaterialBalance()
+    {
+        Console.WriteLine("Enter Material Number:");
+        if (!int.TryParse(Console.ReadLine(), out int materialNumber))
+        {
+            Console.WriteLine("Invalid material number. Please enter a valid number.");
+            return;
+        }
+
+        int inboundQuantity = inboundMaterials
+            .Where(im => im.MaterialNumber == materialNumber)
+            .Sum(im => im.Quantity);
+
+        int outboundQuantity = outboundMaterials
+            .Where(om => om.MaterialNumber == materialNumber)
+            .Sum(om => om.Quantity);
+
+        int balance = inboundQuantity - outboundQuantity;
+
+        Console.WriteLine("Material Balance for Material Number " + materialNumber + ":");
+        Console.WriteLine("Inbound Quantity: " + inboundQuantity);
+        Console.WriteLine("Outbound Quantity: " + outboundQuantity);
+        Console.WriteLine("Balance: " + balance);
+    }
+
+    static void BrowseMaterialBalance()
+    {
+        Console.WriteLine("Material Balance Information:");
+
+        foreach (Material material in materials)
+        {
+            int inboundQuantity = inboundMaterials
+                .Where(im => im.MaterialNumber == material.MaterialNumber)
+                .Sum(im => im.Quantity);
+
+            int outboundQuantity = outboundMaterials
+                .Where(om => om.MaterialNumber == material.MaterialNumber)
+                .Sum(om => om.Quantity);
+
+            int balance = inboundQuantity - outboundQuantity;
+
+            Console.WriteLine("Material Number: " + material.MaterialNumber);
+            Console.WriteLine("Material Name: " + material.MaterialName);
+            Console.WriteLine("Inbound Quantity: " + inboundQuantity);
+            Console.WriteLine("Outbound Quantity: " + outboundQuantity);
+            Console.WriteLine("Balance: " + balance);
+            Console.WriteLine();
+        }
+    }
+}
